@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jogo da Velha</title>
+    <style>
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            font-size: 24px;
+            cursor: pointer;
+            border: 1px solid #000;
+        }
+
+        .cell:hover {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jogo da Velha</h1>
+    <div id="board"></div>
+    <script>
+        const board = document.getElementById('board');
+        const cells = Array(9).fill(null);
+        let currentPlayer = 'X';
+
+        function checkWinner() {
+            const winningCombos = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+            for (const combo of winningCombos) {
+                const [a, b, c] = combo;
+                if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+                    alert(`Jogador ${currentPlayer} venceu!`);
+                    resetBoard();
+                    return;
+                }
+            }
+
+            if (cells.every(cell => cell)) {
+                alert('Empate!');
+                resetBoard();
+            }
+        }
+
+        function resetBoard() {
+            cells.fill(null);
+            board.innerHTML = '';
+            currentPlayer = 'X';
+            createBoard();
+        }
+
+        function createBoard() {
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+
+                cell.addEventListener('click', () => {
+                    if (!cells[i]) {
+                        cells[i] = currentPlayer;
+                        cell.textContent = currentPlayer;
+                        checkWinner();
+                        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    }
+                });
+
+                board.appendChild(cell);
+            }
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
